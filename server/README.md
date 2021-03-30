@@ -27,3 +27,10 @@
 @IsBoolean()  //dto
 isVegan: boolean;
 ```
+
+#### 3일차
+
+user Module제작
+
+- id, createAt, updateAt, email, password, role(client|owner|delivery)
+- CRUD(CreateAccount, LogIn, See Profile, Edit Profile, Verify Email)
