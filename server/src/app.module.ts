@@ -1,4 +1,10 @@
-import { Module } from '@nestjs/common';
+import { JwtMiddleware } from './jwt/jwt.middleware';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import * as Joi from 'joi';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -49,4 +55,14 @@ import { JwtModule } from './jwt/jwt.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+
+//전체 app에 middleware 적용
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    //JwtMiddleware를 path api제외하고  POST방식만 적용
+    consumer.apply(JwtMiddleware).forRoutes({
+      path: '/graphql',
+      method: RequestMethod.ALL,
+    });
+  }
+}

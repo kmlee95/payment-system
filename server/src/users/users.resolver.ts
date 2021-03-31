@@ -6,6 +6,7 @@ import {
   CreateAccountOutput,
 } from './dtos/create-account.dto';
 import { UsersService } from './users.service';
+import { User } from './entities/user.entity';
 
 @Resolver()
 export class UsersResolver {
@@ -42,4 +43,7 @@ export class UsersResolver {
       };
     }
   }
+
+  @Query((returns) => User)
+  me() {}
 }

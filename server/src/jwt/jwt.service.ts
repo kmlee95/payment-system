@@ -13,4 +13,7 @@ export class JwtService {
   sign(userId: string): string {
     return jwt.sign({ id: userId }, this.options.privateKey);
   }
+  verify(token: string) {
+    return jwt.verify(token, this.options.privateKey); //payload 값을 가져온다.
+  }
 }
