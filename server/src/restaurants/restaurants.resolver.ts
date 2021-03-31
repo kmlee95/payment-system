@@ -8,12 +8,12 @@ import { UpdateRestaurantDto } from './dtos/update-restaurant.dto';
 export class RestaurantResolver {
   constructor(private readonly restaurantService: RestaurantService) {}
 
-  @Query((returns) => [Restaurant])
+  @Query(() => [Restaurant])
   restaurants(): Promise<Restaurant[]> {
     return this.restaurantService.getAll();
   }
 
-  @Mutation((returns) => Boolean)
+  @Mutation(() => Boolean)
   async createRestaurant(
     @Args('input') createRestaurantDto: CreateRestaurantDto,
   ): Promise<boolean> {
@@ -26,7 +26,7 @@ export class RestaurantResolver {
     }
   }
 
-  @Mutation((returns) => Boolean)
+  @Mutation(() => Boolean)
   async updateRestaurant(
     @Args('input') updateRestaurantDto: UpdateRestaurantDto,
   ): Promise<boolean> {

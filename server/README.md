@@ -34,3 +34,8 @@ user Module제작
 
 - id, createAt, updateAt, email, password, role(client|owner|delivery)
 - CRUD(CreateAccount, LogIn, See Profile, Edit Profile, Verify Email)
+
+#### 4일차
+
+user Authentication
+npm install --save @nestjs/jwt passport-jwt

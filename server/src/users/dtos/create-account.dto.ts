@@ -1,5 +1,5 @@
 import { MutationOutput } from 'src/commo/dtos/output.dto';
-import { Field, InputType, ObjectType, PickType } from '@nestjs/graphql';
+import { InputType, ObjectType, PickType } from '@nestjs/graphql';
 import { User } from '../entities/user.entity';
 
 @InputType()

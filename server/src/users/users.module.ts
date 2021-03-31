@@ -3,9 +3,11 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { UsersService } from './users.service';
+import { ConfigService } from '@nestjs/config';
 
+//import에 넣는 모듈은 constructor 에서 불러다 쓸 수 있다.(service)
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User]), ConfigService],
   providers: [UsersResolver, UsersService],
 })
 export class UsersModule {}
