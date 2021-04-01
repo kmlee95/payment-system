@@ -59,7 +59,9 @@ GraphQLModule.forRoot({
    auth.guard 는 함수인데 request를 다음단계로 진행할지 결정
    graphql에서 authentication 을 위해 @UseGuards 어노테이션을 사용한다.
 
-   (2) Authorization :user가 어떤일을 하기 전에 permission을 가지고 있는 지확인, 허가[인가]
+   (1-1) auth-user.decorator.ts 에서 처럼 decorator을 생성해줄 수 있다.
+
+   (2) Authorization :user가 어떤일을 하기 전에 permission을 가지고 있는 지 확인, 허가[인가]
 
 <!-- {
   "x-jwt" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjE3Mjg4NTY5fQ.53yXqQRQRyNrWdxYILPE-ruNb3frGv6ZUKUK66HSL8E"
