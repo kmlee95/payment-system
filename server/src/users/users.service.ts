@@ -1,3 +1,4 @@
+import { EditProfileInput } from './dtos/edit-profile';
 import { JwtService } from './../jwt/jwt.service';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -66,5 +67,9 @@ export class UsersService {
 
   async findById(id: string): Promise<User> {
     return this.users.findOne({ id });
+  }
+
+  async editProfile(userId: string, { email, password }: EditProfileInput) {
+    return this.users.update(userId, { email, password });
   }
 }
