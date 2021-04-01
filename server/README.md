@@ -39,3 +39,28 @@ user Module제작
 
 user Authentication
 npm install --save @nestjs/jwt passport-jwt
+
+- Injection 의 원리 : module -> provider
+- jwt 구현(middleware적용)
+
+#### 5일차
+
+req['user']값을 graphql에서 가져오기
+
+```javascript
+GraphQLModule.forRoot({
+  autoSchemaFile: true,
+  context: ({ req }) => ({ user: req['user'] }),
+}),
+```
+
+2. auth 생성  
+   (1) Authentication : 누가 자원을 요청하는지 확인하는 과정(입증,증명 인증)  
+   auth.guard 는 함수인데 request를 다음단계로 진행할지 결정
+   graphql에서 authentication 을 위해 @UseGuards 어노테이션을 사용한다.
+
+   (2) Authorization :user가 어떤일을 하기 전에 permission을 가지고 있는 지확인, 허가[인가]
+
+<!-- {
+  "x-jwt" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjE3Mjg4NTY5fQ.53yXqQRQRyNrWdxYILPE-ruNb3frGv6ZUKUK66HSL8E"
+} -->

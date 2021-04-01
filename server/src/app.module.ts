@@ -13,6 +13,7 @@ import { UsersModule } from './users/users.module';
 import { CommoModule } from './commo/commo.module';
 import { User } from './users/entities/user.entity';
 import { JwtModule } from './jwt/jwt.module';
+import { AuthModule } from './auth/auth.module';
 
 //전체 모듈을 의미(각 모듈에서 불러다 쓸 수 있다)
 //static module : UsersModule처럼 아무설정이 없는것, dynamic module: forRoot쓴 모듈들 => 이때 동적인모듈은 결과적으로 정적인 모듈이된다.
@@ -45,12 +46,13 @@ import { JwtModule } from './jwt/jwt.module';
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: true,
+      context: ({ req }) => ({ user: req['user'] }),
     }),
     UsersModule,
-    CommoModule,
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,
     }),
+    AuthModule,
   ],
   controllers: [],
   providers: [],
@@ -62,7 +64,7 @@ export class AppModule implements NestModule {
     //JwtMiddleware를 path api제외하고  POST방식만 적용
     consumer.apply(JwtMiddleware).forRoutes({
       path: '/graphql',
-      method: RequestMethod.ALL,
+      method: RequestMethod.POST,
     });
   }
 }
