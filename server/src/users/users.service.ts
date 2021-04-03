@@ -1,3 +1,4 @@
+import { Verification } from './entities/verification.entity';
 import { EditProfileInput } from './dtos/edit-profile';
 import { JwtService } from './../jwt/jwt.service';
 import { Injectable } from '@nestjs/common';
@@ -12,6 +13,8 @@ import { User } from './entities/user.entity';
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly users: Repository<User>,
+    @InjectRepository(Verification)
+    private readonly verifications: Repository<Verification>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -25,7 +28,18 @@ export class UsersService {
       if (exists) {
         return { ok: false, error: 'There is a user with that email already' };
       }
-      await this.users.save(this.users.create({ email, password, role }));
+      //유저 생성시 저장
+      const user = await this.users.save(
+        this.users.create({ email, password, role }),
+      );
+
+      //이메일 검증
+      await this.verifications.save(
+        this.verifications.create({
+          user,
+        }),
+      );
+
       return { ok: true };
     } catch (e) {
       return { ok: false, error: "Couldn't create account" };
@@ -77,6 +91,8 @@ export class UsersService {
     const user = await this.users.findOne(userId);
     if (email) {
       user.email = email;
+      user.verified = false;
+      await this.verifications.save(this.verifications.create({ user }));
     }
     if (password) {
       user.password = password;

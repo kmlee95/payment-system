@@ -66,3 +66,11 @@ GraphQLModule.forRoot({
 <!-- {
   "x-jwt" : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNjE3Mjg4NTY5fQ.53yXqQRQRyNrWdxYILPE-ruNb3frGv6ZUKUK66HSL8E"
 } -->
+
+#### 6일차
+
+- db 관계 맺을 시
+  @OneToOne(type => Profile)
+  @JoinColumn //접근하는 곳에서 작성
+
+- 항상 entity를 생성하면 app.module의 entities에 추가한다.
