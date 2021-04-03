@@ -53,6 +53,7 @@ export class UsersService {
       }
       //const token = jwt.sign({ id: user.id }, this.config.get('SECRET_KEY'));
       const token = this.jwtService.sign(user.id);
+
       return {
         ok: true,
         token: token,
@@ -69,7 +70,17 @@ export class UsersService {
     return this.users.findOne({ id });
   }
 
-  async editProfile(userId: string, { email, password }: EditProfileInput) {
-    return this.users.update(userId, { email, password });
+  async editProfile(
+    userId: string,
+    { email, password }: EditProfileInput,
+  ): Promise<User> {
+    const user = await this.users.findOne(userId);
+    if (email) {
+      user.email = email;
+    }
+    if (password) {
+      user.password = password;
+    }
+    return this.users.save(user);
   }
 }
