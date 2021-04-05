@@ -1,3 +1,4 @@
+import { MailService } from './../mail/mail.service';
 import { UserProfileOutput } from './dtos/user-profile.dto';
 import { VerifyEmailOutput } from './dtos/verify-email.dto';
 import { Verification } from './entities/verification.entity';
@@ -18,6 +19,7 @@ export class UsersService {
     @InjectRepository(Verification)
     private readonly verifications: Repository<Verification>,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async createAccount({
@@ -36,11 +38,13 @@ export class UsersService {
       );
 
       //이메일 검증
-      await this.verifications.save(
+      const verification = await this.verifications.save(
         this.verifications.create({
           user,
         }),
       );
+
+      this.mailService.sendVerificationEmail(user.email, verification.code);
 
       return { ok: true };
     } catch (e) {
@@ -70,7 +74,7 @@ export class UsersService {
           error: 'Wrong password',
         };
       }
-      //const token = jwt.sign({ id: user.id }, this.config.get('SECRET_KEY'));
+
       const token = this.jwtService.sign(user.id);
 
       return {
@@ -108,7 +112,11 @@ export class UsersService {
       if (email) {
         user.email = email;
         user.verified = false;
-        await this.verifications.save(this.verifications.create({ user }));
+
+        const verification = await this.verifications.save(
+          this.verifications.create({ user }),
+        );
+        this.mailService.sendVerificationEmail(user.email, verification.code);
       }
       if (password) {
         user.password = password;

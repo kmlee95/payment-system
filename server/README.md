@@ -98,3 +98,5 @@ const user = await this.users.findOne(userId); //라고 했을 때 엔티티에 
 password: string;
 
 ```
+
+- 프론트에선 api호출시 axios, fetch를 사용하지만 노드에는 없다. 대신 `request` 나 `got` 패키지를 설치해서 호출
