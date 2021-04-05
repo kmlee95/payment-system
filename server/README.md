@@ -69,8 +69,32 @@ GraphQLModule.forRoot({
 
 #### 6일차
 
-- db 관계 맺을 시
-  @OneToOne(type => Profile)
-  @JoinColumn //접근하는 곳에서 작성
+- 1. db 관계 맺을 시
+     @OneToOne(type => Profile)
+     @JoinColumn //접근하는 곳에서 작성
 
 - 항상 entity를 생성하면 app.module의 entities에 추가한다.
+
+- verifiation 추가
+
+- 2. db관계 맺은거에서 불러오고 싶을 시 아래와 같이 작성
+
+```javascript
+const verification = await this.verifications.findOne(
+  { code },
+  { loadRelationIds: true }, //id만 불러온다
+  { relations: ['user'] }, // user정보를 전체 불러온다.
+);
+```
+
+- 3. user 선택 시 password는 빼고 가져오기
+
+```javascript
+const user = await this.users.findOne(userId); //라고 했을 때 엔티티에 아래와 같이 주면 된다.
+
+@Column({ select: false })  //select:false 를 준다.
+@Field((type) => String)
+@IsString()
+password: string;
+
+```

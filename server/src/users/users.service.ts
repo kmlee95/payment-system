@@ -1,3 +1,5 @@
+import { UserProfileOutput } from './dtos/user-profile.dto';
+import { VerifyEmailOutput } from './dtos/verify-email.dto';
 import { Verification } from './entities/verification.entity';
 import { EditProfileInput } from './dtos/edit-profile';
 import { JwtService } from './../jwt/jwt.service';
@@ -51,7 +53,10 @@ export class UsersService {
     password,
   }: LoginInput): Promise<{ ok: boolean; error?: string; token?: string }> {
     try {
-      const user = await this.users.findOne({ email });
+      const user = await this.users.findOne(
+        { email },
+        { select: ['id', 'password'] },
+      );
       if (!user) {
         return {
           ok: false,
@@ -80,23 +85,55 @@ export class UsersService {
     }
   }
 
-  async findById(id: string): Promise<User> {
-    return this.users.findOne({ id });
+  async findById(id: string): Promise<UserProfileOutput> {
+    try {
+      const user = await this.users.findOne({ id });
+      if (user) {
+        return {
+          ok: true,
+          user: user,
+        };
+      }
+    } catch (error) {
+      return { ok: false, error: 'User Not Found' };
+    }
   }
 
   async editProfile(
     userId: string,
     { email, password }: EditProfileInput,
-  ): Promise<User> {
-    const user = await this.users.findOne(userId);
-    if (email) {
-      user.email = email;
-      user.verified = false;
-      await this.verifications.save(this.verifications.create({ user }));
+  ): Promise<UserProfileOutput> {
+    try {
+      const user = await this.users.findOne(userId);
+      if (email) {
+        user.email = email;
+        user.verified = false;
+        await this.verifications.save(this.verifications.create({ user }));
+      }
+      if (password) {
+        user.password = password;
+      }
+      this.users.save(user);
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: 'Failrue editProfile' };
     }
-    if (password) {
-      user.password = password;
+  }
+
+  async verifyEmail(code: string): Promise<VerifyEmailOutput> {
+    try {
+      const verification = await this.verifications.findOne(
+        { code },
+        { relations: ['user'] },
+      );
+      if (verification) {
+        verification.user.verified = true;
+        this.users.save(verification.user);
+        return { ok: true };
+      }
+      return { ok: false, error: 'Verification not found.' };
+    } catch (error) {
+      return { ok: false, error };
     }
-    return this.users.save(user);
   }
 }
