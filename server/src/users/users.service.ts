@@ -114,9 +114,10 @@ export class UsersService {
         user.password = password;
       }
       this.users.save(user);
+
       return { ok: true };
     } catch (error) {
-      return { ok: false, error: 'Failrue editProfile' };
+      return { ok: false, error: 'Could not update profile.' };
     }
   }
 
@@ -128,7 +129,10 @@ export class UsersService {
       );
       if (verification) {
         verification.user.verified = true;
-        this.users.save(verification.user);
+        this.users.save(verification.user); //유저 정보를 다시 저장(인증 된 후)
+
+        await this.verifications.delete(verification.id); //인증 정보가 들어있는 테이블의 데이터 삭제
+
         return { ok: true };
       }
       return { ok: false, error: 'Verification not found.' };

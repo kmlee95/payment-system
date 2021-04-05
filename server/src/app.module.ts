@@ -14,6 +14,7 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/entities/user.entity';
 import { JwtModule } from './jwt/jwt.module';
 import { AuthModule } from './auth/auth.module';
+import { MailModule } from './mail/mail.module';
 
 //전체 모듈을 의미(각 모듈에서 불러다 쓸 수 있다)
 //static module : UsersModule처럼 아무설정이 없는것, dynamic module: forRoot쓴 모듈들 => 이때 동적인모듈은 결과적으로 정적인 모듈이된다.
@@ -31,8 +32,13 @@ import { AuthModule } from './auth/auth.module';
         DB_DATABASE: Joi.string().required(),
         DB_PASSWORD: Joi.string().required(),
         PRIVATE_KEY: Joi.string().required(),
+        MAILGUN_API_KEY: Joi.string().required(),
+        MALIGUN_DOMAIN_NAME: Joi.string().required(),
+        MAILBUN_FROM_EMAIL: Joi.string().required(),
       }),
     }),
+
+    /* Typeorm module */
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
@@ -44,15 +50,28 @@ import { AuthModule } from './auth/auth.module';
       logging: process.env.NODE_ENV !== 'prod',
       entities: [User, Verification],
     }),
+
+    /* graphql module */
     GraphQLModule.forRoot({
       autoSchemaFile: true,
       context: ({ req }) => ({ user: req['user'] }),
     }),
-    UsersModule,
+
+    /* jwt module */
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,
     }),
+
+    /* mail module */
+    MailModule.forRoot({
+      apiKey: process.env.MAILGUN_API_KEY,
+      domain: process.env.MAILGUN_DOMAIN_NAME,
+      fromEmail: process.env.MAILGUN_FROM_EMAIL,
+    }),
+
+    UsersModule,
     AuthModule,
+    MailModule,
   ],
   controllers: [],
   providers: [],
