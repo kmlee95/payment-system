@@ -69,15 +69,15 @@ GraphQLModule.forRoot({
 
 #### 6일차
 
-- 1. db 관계 맺을 시
-     @OneToOne(type => Profile)
-     @JoinColumn //접근하는 곳에서 작성
+1. db 관계 맺을 시
+   @OneToOne(type => Profile)
+   @JoinColumn //접근하는 곳에서 작성
 
 - 항상 entity를 생성하면 app.module의 entities에 추가한다.
 
 - verifiation 추가
 
-- 2. db관계 맺은거에서 불러오고 싶을 시 아래와 같이 작성
+2. db관계 맺은거에서 불러오고 싶을 시 아래와 같이 작성
 
 ```javascript
 const verification = await this.verifications.findOne(
@@ -87,7 +87,7 @@ const verification = await this.verifications.findOne(
 );
 ```
 
-- 3. user 선택 시 password는 빼고 가져오기
+3. user 선택 시 password는 빼고 가져오기
 
 ```javascript
 const user = await this.users.findOne(userId); //라고 했을 때 엔티티에 아래와 같이 주면 된다.
@@ -100,3 +100,4 @@ password: string;
 ```
 
 - 프론트에선 api호출시 axios, fetch를 사용하지만 노드에는 없다. 대신 `request` 나 `got` 패키지를 설치해서 호출
+- mailgun api 를 사용하여 email 전송기능 구현
