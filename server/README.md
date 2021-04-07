@@ -101,3 +101,44 @@ password: string;
 
 - 프론트에선 api호출시 axios, fetch를 사용하지만 노드에는 없다. 대신 `request` 나 `got` 패키지를 설치해서 호출
 - mailgun api 를 사용하여 email 전송기능 구현
+
+#### 7일차
+
+1. unit testing
+
+실행 : npm run test:watch
+
+```javascript
+//user.service.spec.ts
+describe('UserService', () => {
+  let service: UsersService;
+
+  //모듈 만들기
+  beforeAll(async () => {
+    const module = await Test.createTestingModule({
+      providers: [UsersService],
+    }).compile();
+
+    service = module.get < UsersService > UsersService;
+  });
+
+  it('should be define', () => {
+    expect(service).toBeDefined();
+  });
+
+  it.todo('createAccount');
+  it.todo('login');
+  it.todo('findById');
+  it.todo('editProfile');
+  it.todo('verifyEmail');
+});
+```
+
+2. 문제
+   (1) 경로
+
+```javascript
+"moduleNameMapper":{
+  "^src/(.*)$":"<rootDir>/$1"
+},
+```
