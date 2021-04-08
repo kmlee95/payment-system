@@ -104,7 +104,7 @@ password: string;
 
 #### 7일차
 
-1. unit testing
+1. unit testing (jest, mock 이용)
 
 실행 : npm run test:watch
 
@@ -142,3 +142,5 @@ describe('UserService', () => {
   "^src/(.*)$":"<rootDir>/$1"
 },
 ```
+
+3. npm run test:cov
