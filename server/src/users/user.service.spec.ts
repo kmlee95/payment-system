@@ -1,19 +1,20 @@
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Test } from '@nestjs/testing';
+import { Repository } from 'typeorm';
 
 import { Verification } from './entities/verification.entity';
 import { UsersService } from './users.service';
 import { User } from './entities/user.entity';
 import { JwtService } from 'src/jwt/jwt.service';
 import { MailService } from 'src/mail/mail.service';
-import { Repository } from 'typeorm';
 
 //mock 더미데이터는 테스트 함수만 적어준다.
-const mockRepository = {
+//npm run test:watch, npm run test:cov
+const mockRepository = () => ({
   findOne: jest.fn(),
   save: jest.fn(),
   create: jest.fn(),
-};
+});
 
 const mockJwtService = {
   sign: jest.fn(),
@@ -31,7 +32,8 @@ type MockRepository<T = any> = Partial<
 //모듈 만들기
 describe('UserService', () => {
   let service: UsersService;
-  let userRepository: MockRepository<User>;
+  let usersRepository: MockRepository<User>;
+  let verificationsRepository: MockRepository<Verification>;
 
   //모듈 만들기
   beforeAll(async () => {
@@ -40,11 +42,11 @@ describe('UserService', () => {
         UsersService,
         {
           provide: getRepositoryToken(User),
-          useValue: mockRepository,
+          useValue: mockRepository(),
         },
         {
           provide: getRepositoryToken(Verification),
-          useValue: mockRepository,
+          useValue: mockRepository(),
         },
         {
           provide: JwtService,
@@ -58,7 +60,8 @@ describe('UserService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
-    userRepository = module.get(getRepositoryToken(User));
+    usersRepository = module.get(getRepositoryToken(User));
+    verificationsRepository = module.get(getRepositoryToken(Verification));
   });
 
   it('should be define', () => {
@@ -66,23 +69,45 @@ describe('UserService', () => {
   });
 
   describe('createAccount', () => {
+    const createAccountArgs = {
+      email: '',
+      password: '',
+      role: 0,
+    };
+
     it('should fail if user exists', async () => {
-      userRepository.findOne.mockResolvedValue({
+      usersRepository.findOne.mockResolvedValue({
         //Findone은 이 값을 넘길거라고 속임
         id: 1,
         email: '',
       });
-      const result = await service.createAccount({
-        email: '',
-        password: '',
-        role: 0,
-      });
+      const result = await service.createAccount(createAccountArgs);
       expect(result).toMatchObject({
         ok: false,
         error: 'There is a user with that email already',
       });
     });
-    it('should create a new user', () => {});
+
+    it('should create a new user', async () => {
+      usersRepository.findOne.mockResolvedValue(undefined);
+      usersRepository.create.mockReturnValue(createAccountArgs);
+      usersRepository.save.mockResolvedValue(createAccountArgs);
+      verificationsRepository.create.mockReturnValue(createAccountArgs);
+      await service.createAccount(createAccountArgs);
+
+      expect(usersRepository.create).toHaveBeenCalledTimes(1);
+      expect(usersRepository.create).toHaveBeenCalledWith(createAccountArgs);
+      expect(usersRepository.save).toHaveBeenCalledTimes(1);
+      expect(usersRepository.save).toHaveBeenCalledWith(createAccountArgs);
+      expect(verificationsRepository.create).toHaveBeenCalledTimes(1);
+      expect(verificationsRepository.create).toHaveBeenCalledWith({
+        user: createAccountArgs,
+      });
+      expect(verificationsRepository.save).toHaveBeenCalledTimes(1);
+      expect(verificationsRepository.save).toHaveBeenCalledWith(
+        createAccountArgs,
+      );
+    });
   });
 
   it.todo('createAccount');
