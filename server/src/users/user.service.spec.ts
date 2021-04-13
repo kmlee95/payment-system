@@ -34,6 +34,7 @@ describe('UserService', () => {
   let service: UsersService;
   let usersRepository: MockRepository<User>;
   let verificationsRepository: MockRepository<Verification>;
+  let mailService: MailService;
 
   //모듈 만들기
   beforeAll(async () => {
@@ -60,6 +61,7 @@ describe('UserService', () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
+    mailService = module.get<MailService>(MailService);
     usersRepository = module.get(getRepositoryToken(User));
     verificationsRepository = module.get(getRepositoryToken(Verification));
   });
@@ -89,24 +91,41 @@ describe('UserService', () => {
     });
 
     it('should create a new user', async () => {
+      //mock 작업
       usersRepository.findOne.mockResolvedValue(undefined);
       usersRepository.create.mockReturnValue(createAccountArgs);
       usersRepository.save.mockResolvedValue(createAccountArgs);
-      verificationsRepository.create.mockReturnValue(createAccountArgs);
-      await service.createAccount(createAccountArgs);
+      verificationsRepository.create.mockReturnValue({
+        user: createAccountArgs,
+      });
+      verificationsRepository.save.mockReturnValue({ code: 'code' });
+
+      //mock 작업 이후 테스트 진행
+      const result = await service.createAccount(createAccountArgs);
 
       expect(usersRepository.create).toHaveBeenCalledTimes(1);
       expect(usersRepository.create).toHaveBeenCalledWith(createAccountArgs);
+
       expect(usersRepository.save).toHaveBeenCalledTimes(1);
       expect(usersRepository.save).toHaveBeenCalledWith(createAccountArgs);
+
       expect(verificationsRepository.create).toHaveBeenCalledTimes(1);
       expect(verificationsRepository.create).toHaveBeenCalledWith({
         user: createAccountArgs,
       });
+
       expect(verificationsRepository.save).toHaveBeenCalledTimes(1);
-      expect(verificationsRepository.save).toHaveBeenCalledWith(
-        createAccountArgs,
+      expect(verificationsRepository.save).toHaveBeenCalledWith({
+        user: createAccountArgs,
+      });
+
+      expect(mailService.sendVerificationEmail).toHaveBeenCalledTimes(1);
+      expect(mailService.sendVerificationEmail).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.any(String),
       );
+
+      expect(result).toEqual({ ok: true });
     });
   });
 
