@@ -61,12 +61,14 @@ export class UsersService {
         { email },
         { select: ['id', 'password'] },
       );
+
       if (!user) {
         return {
           ok: false,
           error: 'User not found',
         };
       }
+
       const passwordCorrect = await user.checkPassword(password);
       if (!passwordCorrect) {
         return {
