@@ -143,4 +143,9 @@ describe('UserService', () => {
 },
 ```
 
-3. npm run test:cov
+3.  npm run test:cov
+
+4.  expect(jwt.verify).toHaveBeenCalledTimes(1);
+    expect(jwt.verify).toHaveBeenCalledWith(TOKEN, TEST_KEY);
+
+    expect(나올 값).toHabeBeenCalledWith(기대 값);
