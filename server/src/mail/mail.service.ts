@@ -10,16 +10,13 @@ export class MailService {
     @Inject(CONFIG_OPTIONS) private readonly options: MailModuleOptions,
   ) {}
 
-  private async sendEmail(
+  async sendEmail(
     subject: string,
     template: string,
     emailVars: EmailVar[],
-  ) {
+  ): Promise<any> {
     const form = new FormData();
-    form.append(
-      'from',
-      `Kyungmin from Uber Eats <mailgun@${this.options.domain}>`,
-    );
+    form.append('from', `Kyungmin from Eats <mailgun@${this.options.domain}>`);
     form.append('to', `kmlee95@naver.com`);
     form.append('subject', subject);
     form.append('template', template);

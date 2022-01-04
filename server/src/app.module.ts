@@ -20,6 +20,8 @@ import { MailModule } from './mail/mail.module';
 //static module : UsersModule처럼 아무설정이 없는것, dynamic module: forRoot쓴 모듈들 => 이때 동적인모듈은 결과적으로 정적인 모듈이된다.
 @Module({
   imports: [
+    // nest js 방식으로 dotenv 보다 최상위에서 사용할 수 있다.
+    // joi 환경변수 유효성 검사
     ConfigModule.forRoot({
       isGlobal: true, //어떤 서비스에서든지 그냥 가져다 쓸 수 있다(module 등록 안하고)
       envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env.test',
@@ -46,14 +48,14 @@ import { MailModule } from './mail/mail.module';
       username: process.env.DB_USERNAME,
       database: process.env.DB_DATABASE,
       password: process.env.DB_PASSWORD,
-      synchronize: process.env.NODE_ENV !== 'prod',
+      synchronize: process.env.NODE_ENV !== 'prod', //db구성을 entity 등록한대로 자동적으로 적용되게 해줌(보통은 db설계하고 들어가서 prod는 동작 안되게)
       logging: process.env.NODE_ENV !== 'prod',
       entities: [User, Verification],
     }),
 
     /* graphql module */
     GraphQLModule.forRoot({
-      autoSchemaFile: true,
+      autoSchemaFile: true, // 스키마 파일을 직접 가지고 있지 않고 자동생성되게
       context: ({ req }) => ({ user: req['user'] }),
     }),
 

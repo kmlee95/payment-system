@@ -10,7 +10,7 @@ import { CreateRestaurantDto } from './dtos/create-restaurant.dto';
 export class RestaurantService {
   constructor(
     @InjectRepository(Restaurant)
-    private readonly restaurants: Repository<Restaurant>,
+    private readonly restaurants: Repository<Restaurant>, //repository 를 등록 함으로써 db에 접근 가능(find, save etc..)
   ) {}
 
   getAll(): Promise<Restaurant[]> {
