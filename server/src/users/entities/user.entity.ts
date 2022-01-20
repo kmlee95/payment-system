@@ -11,9 +11,9 @@ import { InternalServerErrorException } from '@nestjs/common';
 import { IsEmail, IsEnum, IsString } from 'class-validator';
 
 enum UserRole {
-  Client,
-  Owner,
-  Delivery,
+  Client, //0
+  Owner, //1
+  Delivery, //2
 }
 
 //graphql enum
@@ -25,25 +25,25 @@ registerEnumType(UserRole, { name: 'UserRole' });
 @Entity() //TypeOrm
 export class User extends CoreEntity {
   @Column()
-  @Field((type) => String)
+  @Field(() => String)
   @IsEmail() //validation
   email: string;
 
-  @Column({ select: false })
-  @Field((type) => String)
+  @Column({ select: false }) //entity를 가져올 때 password는 가져오지 않음
+  @Field(() => String)
   @IsString()
   password: string;
 
   @Column({ type: 'enum', enum: UserRole }) //db에 enum만드는 방식
-  @Field((type) => UserRole)
+  @Field(() => UserRole)
   @IsEnum(UserRole)
   role: UserRole;
 
   @Column({ default: false })
-  @Field((type) => Boolean)
+  @Field(() => Boolean)
   verified: boolean;
 
-  //service에서 create,update 메소드 사용시 적용된다.
+  //service에서 create,update 메소드 사용시 적용된다.(typeORM)
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword(): Promise<void> {

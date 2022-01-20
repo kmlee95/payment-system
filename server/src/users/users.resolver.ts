@@ -18,26 +18,28 @@ import { VerifyEmailOutput, VerifyEmailInput } from './dtos/verify-email.dto';
 export class UsersResolver {
   constructor(private readonly userService: UsersService) {}
 
-  @Mutation((returns) => CreateAccountOutput)
+  // 회원 생성
+  @Mutation(() => CreateAccountOutput)
   async createAccount(
     @Args('input') createAccountInput: CreateAccountInput,
   ): Promise<CreateAccountOutput> {
     return this.userService.createAccount(createAccountInput);
   }
 
-  @Mutation((returns) => LoginOutput)
+  // 로그인
+  @Mutation(() => LoginOutput)
   async login(@Args('input') loginInput: LoginInput): Promise<LoginOutput> {
     return this.userService.login(loginInput);
   }
 
-  @Query((returns) => User)
   @UseGuards(AuthGuard)
+  @Query(() => User)
   me(@AuthUser() authUser: User) {
     return authUser;
   }
 
   @UseGuards(AuthGuard)
-  @Query((returns) => UserProfileOutput)
+  @Query(() => UserProfileOutput)
   async userProfile(
     @Args() userProfileInput: UserProfileInput,
   ): Promise<UserProfileOutput> {
@@ -45,7 +47,7 @@ export class UsersResolver {
   }
 
   @UseGuards(AuthGuard)
-  @Mutation((returns) => EditProfileOutput)
+  @Mutation(() => EditProfileOutput)
   async editProfile(
     @AuthUser() authUser: User,
     @Args('input') editProfileInput: EditProfileInput,

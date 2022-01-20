@@ -13,11 +13,12 @@ export class MailService {
   async sendEmail(
     subject: string,
     template: string,
+    email: string,
     emailVars: EmailVar[],
   ): Promise<any> {
     const form = new FormData();
     form.append('from', `Kyungmin from Eats <mailgun@${this.options.domain}>`);
-    form.append('to', `kmlee95@naver.com`);
+    form.append('to', email);
     form.append('subject', subject);
     form.append('template', template);
 
@@ -39,7 +40,7 @@ export class MailService {
   }
 
   sendVerificationEmail(email: string, code: string) {
-    this.sendEmail('verify Your Email', 'verify-email', [
+    this.sendEmail('verify Your Email', 'acount', email, [
       { key: 'code', value: code },
       { key: 'username', value: email },
     ]);

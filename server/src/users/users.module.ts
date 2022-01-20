@@ -1,8 +1,9 @@
-import { Verification } from './entities/verification.entity';
-import { UsersResolver } from './users.resolver';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { Verification } from './entities/verification.entity';
 import { User } from './entities/user.entity';
+import { UsersResolver } from './users.resolver';
 import { UsersService } from './users.service';
 
 //import에 넣는 모듈은 constructor 에서 불러다 쓸 수 있다.(service - Repository<User> = TypeOrm)

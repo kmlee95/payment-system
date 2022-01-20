@@ -50,13 +50,13 @@ import { MailModule } from './mail/mail.module';
       password: process.env.DB_PASSWORD,
       synchronize: process.env.NODE_ENV !== 'prod', //db구성을 entity 등록한대로 자동적으로 적용되게 해줌(보통은 db설계하고 들어가서 prod는 동작 안되게)
       logging: process.env.NODE_ENV !== 'prod',
-      entities: [User, Verification],
+      entities: [User, Verification], //여기에 등록해줘야 db에 생성된다.
     }),
 
     /* graphql module */
     GraphQLModule.forRoot({
       autoSchemaFile: true, // 스키마 파일을 직접 가지고 있지 않고 자동생성되게
-      context: ({ req }) => ({ user: req['user'] }),
+      context: ({ req }) => ({ user: req['user'] }), // resolver에서 사용할 수 있다.(모든 Resolver에서 공유)
     }),
 
     /* jwt module */
@@ -71,7 +71,7 @@ import { MailModule } from './mail/mail.module';
       fromEmail: process.env.MAILGUN_FROM_EMAIL,
     }),
 
-    UsersModule,
+    UsersModule, //static module, ~.forRoot 는 dynamic module(동적인 모듈은 결국 정적모듈이 된다)
     AuthModule,
     MailModule,
   ],

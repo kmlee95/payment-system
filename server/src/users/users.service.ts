@@ -43,7 +43,7 @@ export class UsersService {
           user,
         }),
       );
-
+      console.log('good!!');
       this.mailService.sendVerificationEmail(user.email, verification.code);
 
       return { ok: true };
@@ -59,7 +59,7 @@ export class UsersService {
     try {
       const user = await this.users.findOne(
         { email },
-        { select: ['id', 'password'] },
+        { select: ['id', 'password'] }, //id, password값만 가져온다.
       );
 
       if (!user) {
@@ -113,7 +113,7 @@ export class UsersService {
       if (email) {
         user.email = email;
         user.verified = false;
-
+        console.log('good');
         const verification = await this.verifications.save(
           this.verifications.create({ user }),
         );
@@ -134,8 +134,9 @@ export class UsersService {
     try {
       const verification = await this.verifications.findOne(
         { code },
-        { relations: ['user'] },
+        { relations: ['user'] }, //user entity 정보를 가져옴(verification JoinColumn으로 되어있는)
       );
+
       if (verification) {
         verification.user.verified = true;
         this.users.save(verification.user); //유저 정보를 다시 저장(인증 된 후)

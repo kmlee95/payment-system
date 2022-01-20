@@ -17,6 +17,7 @@ export class RestaurantService {
     return this.restaurants.find();
   }
 
+  // create(인스턴스를 생성), save(인스턴스를 저장)의 차이 -> create는 db를 건들지 않음. save는 접근
   createRestaurant(
     createRestaurantDto: CreateRestaurantDto,
   ): Promise<Restaurant> {

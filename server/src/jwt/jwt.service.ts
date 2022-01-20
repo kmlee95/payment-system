@@ -10,6 +10,7 @@ export class JwtService {
   ) {}
 
   sign(userId: string): string {
+    //사용자는 토큰안에 뭐가 들어있는지 확인가능하다. 대신 privatekey를 이용하므로 사용자카 토큰을 수정했는지 알수있다.
     return jwt.sign({ id: userId }, this.options.privateKey);
   }
   verify(token: string) {

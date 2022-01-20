@@ -9,11 +9,11 @@ import { User } from './user.entity';
 @Entity()
 export class Verification extends CoreEntity {
   @Column()
-  @Field((type) => String)
+  @Field(() => String)
   code: string;
 
-  @OneToOne((type) => User, { onDelete: 'CASCADE' })
-  @JoinColumn()
+  @OneToOne(() => User, { onDelete: 'CASCADE' })
+  @JoinColumn() //OneToOne을 사용하면 필수(Verification 에서 User에 접근)
   user: User;
 
   @BeforeInsert()

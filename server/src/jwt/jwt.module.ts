@@ -11,7 +11,7 @@ export class JwtModule {
       module: JwtModule,
       providers: [
         {
-          provide: CONFIG_OPTIONS,
+          provide: CONFIG_OPTIONS, //inject시 이 값으로 해준다.
           useValue: options,
         },
         JwtService,
